@@ -1,4 +1,6 @@
 const { Router } = require('express');
+const asyncHandler = require('express-async-handler');
+const NotFoundError = require('../errors/NotFoundError');
 const indexRouter = Router();
 
 const messages = [
@@ -15,12 +17,14 @@ const messages = [
 ];
 
 indexRouter.get('/', (req, res) => {
-  res.render('pages/index', { title: 'Mini Messageboard', messages: messages });
+  res.render('pages/index', {
+    title: 'Mini Messageboard',
+    messages: messages,
+  });
 });
 
 indexRouter.get('/new', (req, res) => {
   res.render('pages/form', { title: 'New message' });
-
 });
 
 indexRouter.post('/new', (req, res) => {
@@ -28,5 +32,19 @@ indexRouter.post('/new', (req, res) => {
   messages.push({ text: messageText, user: messageUser, added: new Date() });
   res.redirect('/');
 });
+
+indexRouter.get(
+  '/details/:index',
+  asyncHandler((req, res) => {
+    const index = req.params.index;
+    if (index < 0 || index >= messages.length) {
+      throw new NotFoundError();
+    }
+    res.render('pages/details', {
+      title: 'Detais',
+      message: messages[index],
+    });
+  })
+);
 
 module.exports = indexRouter;
