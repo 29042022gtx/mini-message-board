@@ -1,24 +1,28 @@
 #! /usr/bin/env node
 
+require('dotenv/config')
 const { Client } = require('pg');
 
 const SQL = `
-CREATE TABLE IF NOT EXISTS messages (
+DROP TABLE IF EXISTS messages;
+
+CREATE TABLE messages (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  username VARCHAR ( 255 )
+  author VARCHAR(255),
+  text VARCHAR(1000),
+  added DATE DEFAULT CURRENT_DATE
 );
 
-INSERT INTO messages (username) 
-VALUES
-  ('Bryan'),
-  ('Odin'),
-  ('Damon');
+INSERT INTO messages (author, text) VALUES
+  ('Bryan', 'Lorem ipsum'),
+  ('Odin', 'Lorum ipsem'),
+  ('Damon', 'Acb');
 `;
 
 async function main() {
   console.log('seeding...');
   const client = new Client({
-    connectionString: process.argv[2],
+    connectionString: process.env.DATABASE_URI,
   });
   await client.connect();
   await client.query(SQL);

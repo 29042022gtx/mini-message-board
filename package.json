@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --watch src/app.js"
+    "start": "node --watch src/app.js",
+    "db:seed": "node src/db/seeder.js"
   },
   "keywords": [],
   "author": "",
