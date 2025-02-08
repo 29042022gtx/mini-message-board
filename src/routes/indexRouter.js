@@ -8,6 +8,6 @@ indexRouter.get('/new', indexController.getCreateMessage);
 
 indexRouter.post('/new', indexController.postCreateMessage);
 
-indexRouter.get('/details/:index', indexController.getMessageDetails);
+indexRouter.get('/details/:id', indexController.getMessageDetails);
 
 module.exports = indexRouter;

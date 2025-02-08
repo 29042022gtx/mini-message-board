@@ -10,11 +10,11 @@
 <body>
   <h1>Message board</h1>
   <%- include('../components/navbar') %>
-  <% messages.forEach((mes, idx) => { %>
+  <% messages.forEach((mes) => { %>
    <div>
-    <%= mes.user %>: <%= mes.text %>
+    <%= mes.author %>: <%= mes.text %>
     <br>
-    <%= mes.added.toDateString() %> <a href="./details/<%= idx %>">Details</a>
+    <%= mes.added.toDateString() %> <a href="./details/<%= mes.id %>">Details</a>
    </div>
   <% }) %>
 </body>

@@ -1,44 +1,33 @@
 const asyncHandler = require('express-async-handler');
 const NotFoundError = require('../errors/NotFoundError');
+const db = require('../db/query');
 
-const messages = [
-  {
-    text: 'Hi there!',
-    user: 'Amando',
-    added: new Date(),
-  },
-  {
-    text: 'Hello World!',
-    user: 'Charles',
-    added: new Date(),
-  },
-];
-
-const getMessageList = asyncHandler((req, res) => {
+const getMessageList = asyncHandler(async (req, res) => {
   res.render('pages/index', {
     title: 'Mini Messageboard',
-    messages: messages,
+    messages: await db.getMessageList(),
   });
 });
 
-const getCreateMessage = asyncHandler((req, res) => {
+const getCreateMessage = asyncHandler(async (req, res) => {
   res.render('pages/form', { title: 'New message' });
 });
 
-const postCreateMessage = asyncHandler((req, res) => {
-  const { messageText, messageUser } = req.body;
-  messages.push({ text: messageText, user: messageUser, added: new Date() });
+const postCreateMessage = asyncHandler(async (req, res) => {
+  const { messageAuthor, messageText } = req.body;
+  await db.addMessage(messageAuthor, messageText);
   res.redirect('/');
 });
 
-const getMessageDetails = asyncHandler((req, res) => {
-  const index = req.params.index;
-  if (index < 0 || index >= messages.length) {
-    throw new NotFoundError();
+const getMessageDetails = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const message = (await db.getMessageDetails(id))[0];
+  if (!message) {
+    throw new NotFoundError('Cannot find message!');
   }
   res.render('pages/details', {
     title: 'Detais',
-    message: messages[index],
+    message: message,
   });
 });
 
